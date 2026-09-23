@@ -304,6 +304,11 @@ received and applied state. A temporary API or control-plane failure therefore
 does not erase working node state. Poll failure or silence does not release
 capacity; Kubernetes Node identity and lifecycle drive release.
 
+The [node-agent delivery contract](node-agent-delivery.md) defines the versioned
+request, response, payload and error semantics. Shared contract types and
+validation are implemented; the serving endpoint, durable publication, polling
+client and persistent cache remain separate implementation work.
+
 ### Control Plane State
 
 Kubernetes resources are authoritative:

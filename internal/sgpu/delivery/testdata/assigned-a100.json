@@ -1,0 +1,50 @@
+{
+  "apiVersion": "v1alpha1",
+  "node": {"nodeName": "worker-01", "nodeUID": "node-instance-a"},
+  "assignmentRevision": 7,
+  "rackDeliveryGeneration": 12,
+  "state": "assigned",
+  "rack": {"name": "training-0", "uid": "rack-instance-a", "nodeIndex": 0},
+  "configuration": {
+    "nvml": {
+      "version": "1.0",
+      "system": {
+        "driver_version": "580.65.06",
+        "nvml_version": "13.0",
+        "cuda_version": "13.0",
+        "cuda_version_major": 13,
+        "cuda_version_minor": 0,
+        "num_devices": 1
+      },
+      "device_defaults": {
+        "name": "NVIDIA A100-SXM4-40GB",
+        "architecture": "ampere",
+        "compute_capability": {"major": 8, "minor": 0},
+        "num_gpu_cores": 6912,
+        "memory": {"total_bytes": 42949672960, "reserved_bytes": 1048576, "memory_bus_width": 5120},
+        "pci": {"device_id": 548409566, "subsystem_id": 323948766},
+        "fabric": {"cluster_uuid": "00000000-0000-0000-0000-000000000001", "clique_id": 0, "state": "completed"}
+      },
+      "devices": [
+        {"index": 0, "uuid": "GPU-a100a100-0000-0000-0000-000000000001", "serial": "00000000000000000001", "minor_number": 3, "pci": {"bus_id": "0000:01:00.0"}}
+      ],
+      "nvlink": {"version": 3, "links_per_gpu": 12, "bandwidth_per_link_mbps": 25000, "switches": [{"bdf": "0000:02:00.0", "uuid": "NVSwitch-A100-0"}]},
+      "pcie_topology": {"root_complexes": [{"id": "pci0000:00", "numa_node": 0, "devices": ["0000:01:00.0"]}]}
+    },
+    "infiniband": {
+      "enabled": true,
+      "hca_type": "MT4129",
+      "fw_version": "28.43.1014",
+      "hw_rev": "0x0",
+      "board_id": "MT_0000000838",
+      "node_desc_template": "{node_name} mlx5_{idx}",
+      "link_layer": "InfiniBand",
+      "rate_gbps": 400,
+      "port_state": "ACTIVE",
+      "phys_state": "LinkUp",
+      "hcas_per_gpu": 1,
+      "hca_count": 1,
+      "guid_prefix": "a088c20300ab"
+    }
+  }
+}
