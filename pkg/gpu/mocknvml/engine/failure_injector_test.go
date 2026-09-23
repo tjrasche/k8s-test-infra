@@ -800,7 +800,8 @@ func TestFailureInjection_MergeDeviceOverride(t *testing.T) {
 		},
 	}
 
-	mergeDeviceOverride(&base, override)
+	config := &Config{YAMLConfig: &YAMLConfig{DeviceDefaults: base, Devices: []DeviceOverride{*override}}}
+	base = *config.GetDeviceConfig(0)
 
 	require.NotNil(t, base.Failure, "expected override to replace base.Failure")
 	require.Equal(t, FailureModeLost, base.Failure.Mode, "expected override to replace base.Failure with lost mode")
