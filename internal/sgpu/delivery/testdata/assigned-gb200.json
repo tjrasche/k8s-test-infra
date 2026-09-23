@@ -1,0 +1,71 @@
+{
+  "apiVersion": "v1alpha1",
+  "node": {"nodeName": "worker-01", "nodeUID": "node-instance-a"},
+  "assignmentRevision": 8,
+  "rackDeliveryGeneration": 2,
+  "state": "assigned",
+  "rack": {"name": "training-1", "uid": "rack-instance-b", "nodeIndex": 0},
+  "configuration": {
+    "nvml": {
+      "version": "1.0",
+      "system": {
+        "driver_version": "580.65.06",
+        "nvml_version": "13.580.65",
+        "cuda_version": "13.0",
+        "cuda_version_major": 13,
+        "cuda_version_minor": 0,
+        "num_devices": 4
+      },
+      "device_defaults": {
+        "name": "NVIDIA GB200",
+        "architecture": "blackwell",
+        "compute_capability": {"major": 10, "minor": 0},
+        "num_gpu_cores": 18432,
+        "memory": {"total_bytes": 199715979264, "reserved_bytes": 1073741824, "memory_bus_width": 8192},
+        "pci": {"device_id": 692130014, "subsystem_id": 541462750},
+        "fabric": {"cluster_uuid": "00000000-0000-0000-0000-000000000002", "clique_id": 1, "state": "completed"},
+        "platform": {"chassis_serial_number": "1822725100200", "slot_number": 21, "tray_index": 11, "host_id": 1, "peer_type": "switch_connected"},
+        "cpu": {"type": "grace", "cores": 72, "memory_gb": 480, "coherent_memory": true}
+      },
+      "devices": [
+        {"index": 0, "uuid": "GPU-b200b200-0000-0000-0000-000000000000", "serial": "1562849103700", "minor_number": 0, "pci": {"bus_id": "0000:0a:00.0"}, "grace_cpu_pair": 0, "platform": {"module_id": 2}},
+        {"index": 1, "uuid": "GPU-b200b200-0000-0000-0000-000000000001", "serial": "1562849103700", "minor_number": 1, "pci": {"bus_id": "0000:0b:00.0"}, "grace_cpu_pair": 0, "platform": {"module_id": 1}},
+        {"index": 2, "uuid": "GPU-b200b200-0000-0000-0000-000000000002", "serial": "1562849103701", "minor_number": 2, "pci": {"bus_id": "0000:4a:00.0"}, "grace_cpu_pair": 1, "platform": {"module_id": 4}},
+        {"index": 3, "uuid": "GPU-b200b200-0000-0000-0000-000000000003", "serial": "1562849103701", "minor_number": 3, "pci": {"bus_id": "0000:4b:00.0"}, "grace_cpu_pair": 1, "platform": {"module_id": 3}}
+      ],
+      "nvlink": {
+        "version": 5,
+        "links_per_gpu": 18,
+        "bandwidth_per_link_mbps": 53125,
+        "c2c_enabled": true,
+        "switches": [
+          {"bdf": "0000:01:00.0", "uuid": "NVSwitch-GB200-0"},
+          {"bdf": "0000:02:00.0", "uuid": "NVSwitch-GB200-1"},
+          {"bdf": "0000:03:00.0", "uuid": "NVSwitch-GB200-2"},
+          {"bdf": "0000:04:00.0", "uuid": "NVSwitch-GB200-3"}
+        ]
+      },
+      "pcie_topology": {
+        "root_complexes": [
+          {"id": "pci0000:00", "numa_node": 0, "devices": ["0000:0a:00.0", "0000:0b:00.0"]},
+          {"id": "pci0000:40", "numa_node": 1, "devices": ["0000:4a:00.0", "0000:4b:00.0"]}
+        ]
+      }
+    },
+    "infiniband": {
+      "enabled": true,
+      "hca_type": "MT4129",
+      "fw_version": "28.40.1000",
+      "hw_rev": "0x0",
+      "board_id": "MT_0000000838",
+      "node_desc_template": "{node_name} mlx5_{idx}",
+      "link_layer": "InfiniBand",
+      "rate_gbps": 400,
+      "port_state": "ACTIVE",
+      "phys_state": "LinkUp",
+      "hcas_per_gpu": 1,
+      "hca_count": 4,
+      "guid_prefix": "9b88c20300ab"
+    }
+  }
+}

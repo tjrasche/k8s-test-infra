@@ -1,0 +1,7 @@
+{
+  "apiVersion": "v1alpha1",
+  "node": {"nodeName": "worker-01", "nodeUID": "node-instance-a"},
+  "assignmentRevision": 9,
+  "rackDeliveryGeneration": 0,
+  "state": "unassigned"
+}
