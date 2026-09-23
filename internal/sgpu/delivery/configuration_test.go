@@ -4,6 +4,7 @@
 package delivery_test
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -135,6 +136,39 @@ func TestPayloadLoadsThroughExistingNVMLConsumer(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestPayloadPreservesEmptyProcessOverride(t *testing.T) {
+	t.Parallel()
+	applied := response(t, "assigned-gb200")
+	payload := applied.Configuration.NVML
+	payload.DeviceDefaults.Processes = []engine.ProcessConfig{{PID: 100, Type: "C"}}
+	payload.Devices[0].Processes = []engine.ProcessConfig{}
+	require.NoError(t, applied.Validate(request()))
+
+	t.Run("JSON successor", func(t *testing.T) {
+		t.Parallel()
+		data, err := json.Marshal(applied)
+		require.NoError(t, err)
+		roundTrip, err := delivery.DecodeResponse(data, request())
+		require.NoError(t, err)
+		require.NoError(t, roundTrip.ValidateSuccessor(applied))
+		require.Equal(t, applied, roundTrip)
+	})
+
+	t.Run("YAML consumer", func(t *testing.T) {
+		t.Parallel()
+		data, err := yaml.Marshal(payload)
+		require.NoError(t, err)
+		path := filepath.Join(t.TempDir(), "config.yaml")
+		require.NoError(t, os.WriteFile(path, data, 0o600))
+		loaded, err := engine.LoadYAMLConfig(path)
+		require.NoError(t, err)
+		consumer := &engine.Config{YAMLConfig: loaded}
+		require.Empty(t, consumer.GetDeviceConfig(0).Processes)
+		require.Equal(t, payload.DeviceDefaults.Processes, consumer.GetDeviceConfig(1).Processes)
+		require.Equal(t, payload, loaded)
+	})
 }
 
 func TestA100FixtureMatchesRackExampleHardware(t *testing.T) {

@@ -137,7 +137,7 @@ type DeviceConfig struct {
 	Topology *TopologyConfig `json:"topology,omitempty"`
 
 	// Processes
-	Processes []ProcessConfig `json:"processes,omitempty"`
+	Processes []ProcessConfig `json:"processes,omitzero"`
 
 	// DynamicMetrics enables time-varying values for temperature, power, and
 	// utilization. When nil (default), static values from the other config
