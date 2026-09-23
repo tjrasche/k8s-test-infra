@@ -37,9 +37,6 @@ func nvmlStructVersion(structSize uintptr, version uint32) uint32 {
 	return uint32(structSize) | (version << 24)
 }
 
-// MaxDevices is the maximum number of devices supported by the mock server.
-const MaxDevices = 8
-
 // DefaultBAR1SizeMB is the default simulated BAR1 aperture size in megabytes.
 const DefaultBAR1SizeMB = 256
 

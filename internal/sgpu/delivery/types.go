@@ -10,7 +10,7 @@ import (
 	"errors"
 
 	ibconfig "github.com/NVIDIA/k8s-test-infra/internal/ib/config"
-	"github.com/NVIDIA/k8s-test-infra/pkg/gpu/mocknvml/engine"
+	nvmlconfig "github.com/NVIDIA/k8s-test-infra/pkg/gpu/mocknvml/config"
 )
 
 // The API version is independent of the embedded NVML consumer schema version.
@@ -74,8 +74,8 @@ type RackReference struct {
 // The protocol's required fields are validated separately from file-mode defaults.
 // Changes to these consumer types must be reviewed for wire compatibility.
 type Configuration struct {
-	NVML       *engine.YAMLConfig   `json:"nvml"`
-	Infiniband *ibconfig.Infiniband `json:"infiniband"`
+	NVML       *nvmlconfig.YAMLConfig `json:"nvml"`
+	Infiniband *ibconfig.Infiniband   `json:"infiniband"`
 }
 
 // Response is a full snapshot; receiving it does not acknowledge application.

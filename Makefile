@@ -439,7 +439,7 @@ mokka-control-plane-image-attest: ## Attest each Mokka control-plane child manif
 
 
 .PHONY: test
-test: ## Run unit tests with race detection and coverage
+test: test-delivery-nocgo ## Run unit tests with race detection and coverage
 	@$(GO_CMD) test -v -race -coverprofile=coverage.out -covermode=atomic ./...
 
 # internal/fsutil and internal/agent/gpudriver skip their bind-mount, mknod
@@ -458,6 +458,11 @@ test-privileged: ## Run internal/fsutil and internal/agent/gpudriver as root in 
 		-v "$(shell $(GO_CMD) env GOMODCACHE)":/go/pkg/mod \
 		golang:$(shell ./hack/golang-version.sh) \
 		go test -v ./internal/fsutil/... ./internal/agent/gpudriver/...
+
+# The control plane must be able to consume this contract without CGO.
+.PHONY: test-delivery-nocgo
+test-delivery-nocgo: ## Check the shared delivery contract builds without CGO
+	CGO_ENABLED=0 $(GO_CMD) build ./internal/sgpu/delivery
 
 HELM_CHART_DIR      := deployments/nvml-mock/helm/nvml-mock
 CRDS_HELM_CHART_DIR := deployments/mokka-crds/helm/mokka-crds

@@ -12,7 +12,7 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/NVIDIA/k8s-test-infra/internal/gpuarch"
-	"github.com/NVIDIA/k8s-test-infra/pkg/gpu/mocknvml/engine"
+	nvmlconfig "github.com/NVIDIA/k8s-test-infra/pkg/gpu/mocknvml/config"
 )
 
 var canonicalPCIAddress = regexp.MustCompile(`^[0-9a-f]{4}:[0-9a-f]{2}:[0-9a-f]{2}\.[0-7]$`)
@@ -31,7 +31,7 @@ func (c Configuration) validate() error {
 	return nil
 }
 
-func validateNVML(config *engine.YAMLConfig) error {
+func validateNVML(config *nvmlconfig.YAMLConfig) error {
 	if config.Version != "1.0" {
 		return fmt.Errorf("unsupported nvml version %q", config.Version)
 	}
@@ -47,22 +47,21 @@ func validateNVML(config *engine.YAMLConfig) error {
 	return nil
 }
 
-func validateSystem(config *engine.YAMLConfig) error {
+func validateSystem(config *nvmlconfig.YAMLConfig) error {
 	system := config.System
 	if system.DriverVersion == "" || system.NVMLVersion == "" || system.CUDAVersion == "" || system.CUDAVersionMajor <= 0 || system.CUDAVersionMinor < 0 {
 		return errors.New("nvml.system requires resolved driver, NVML and CUDA versions")
 	}
-	if system.NumDevices <= 0 || system.NumDevices > engine.MaxDevices || system.NumDevices != len(config.Devices) {
-		return fmt.Errorf("nvml.system.num_devices must be between 1 and %d and match the explicit device list", engine.MaxDevices)
+	if system.NumDevices <= 0 || system.NumDevices > nvmlconfig.MaxDevices || system.NumDevices != len(config.Devices) {
+		return fmt.Errorf("nvml.system.num_devices must be between 1 and %d and match the explicit device list", nvmlconfig.MaxDevices)
 	}
 	return nil
 }
 
-func validateDevices(config *engine.YAMLConfig) error {
+func validateDevices(config *nvmlconfig.YAMLConfig) error {
 	indices := make(map[int]bool, len(config.Devices))
 	uuids := make(map[string]bool, len(config.Devices))
 	addresses := make(map[string]bool, len(config.Devices))
-	consumer := &engine.Config{YAMLConfig: config}
 	for _, device := range config.Devices {
 		if device.Index < 0 || device.Index >= len(config.Devices) || indices[device.Index] {
 			return fmt.Errorf("invalid or duplicate GPU index %d", device.Index)
@@ -75,7 +74,7 @@ func validateDevices(config *engine.YAMLConfig) error {
 			return fmt.Errorf("duplicate GPU UUID %q", device.UUID)
 		}
 		uuids[device.UUID] = true
-		resolved := consumer.GetDeviceConfig(device.Index)
+		resolved := config.GetDeviceConfig(device.Index)
 		if err := validateDeviceHardware(resolved); err != nil {
 			return fmt.Errorf("GPU %d: %w", device.Index, err)
 		}
@@ -84,10 +83,10 @@ func validateDevices(config *engine.YAMLConfig) error {
 		}
 		addresses[resolved.PCI.BusID] = true
 	}
-	return engine.ValidateMinorNumbers(config)
+	return nvmlconfig.ValidateMinorNumbers(config)
 }
 
-func validateDeviceIdentity(device engine.DeviceOverride) error {
+func validateDeviceIdentity(device nvmlconfig.DeviceOverride) error {
 	id, prefixed := strings.CutPrefix(device.UUID, "GPU-")
 	if !prefixed || !isCanonicalUUID(id) {
 		return errors.New("explicit canonical GPU UUID is required")
@@ -102,7 +101,7 @@ func validateDeviceIdentity(device engine.DeviceOverride) error {
 	return nil
 }
 
-func validateDeviceHardware(device *engine.DeviceConfig) error {
+func validateDeviceHardware(device *nvmlconfig.DeviceConfig) error {
 	if _, known := gpuarch.Parse(device.Architecture); device.Name == "" || !known {
 		return errors.New("resolved GPU name and supported architecture are required")
 	}
@@ -118,7 +117,7 @@ func validateDeviceHardware(device *engine.DeviceConfig) error {
 	return nil
 }
 
-func validatePCI(pci *engine.PCIConfig) error {
+func validatePCI(pci *nvmlconfig.PCIConfig) error {
 	if pci == nil || pci.DeviceID == 0 || pci.SubsystemID == 0 {
 		return errors.New("resolved PCI identity words are required")
 	}
